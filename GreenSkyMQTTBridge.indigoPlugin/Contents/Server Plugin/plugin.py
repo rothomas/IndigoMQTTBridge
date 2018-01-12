@@ -202,6 +202,9 @@ class Plugin(indigo.PluginBase):
 					if dev.deviceTypeId == "MQTTSensor":
 							dev.updateStateOnServer("display", msg.payload + dev.pluginProps["unit"] )
 							dev.updateStateOnServer("sensorValue", msg.payload )
+
+					if dev.deviceTypeId == "MQTTTopic":
+							dev.updateStateOnServer("state", msg.payload)
 				
 
 	def closedDeviceConfigUi(self, valuesDict, userCancelled, typeId, devId):

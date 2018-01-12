@@ -103,5 +103,21 @@
 			</State>
 				
 		</States>
-	</Device>	
+	</Device>
+	<Device type="custom" id="MQTTTopic">
+		<Name>MQTT Topic Subscription</Name>
+		<ConfigUI>
+			<Field id="stateTopic" type="textfield" defaultValue="">
+				<Label>State Topic:</Label>
+			</Field>
+		</ConfigUI>
+		<UiDisplayStateId>state</UiDisplayStateId>
+		<States>
+			<State id="state">
+				<ValueType>String</ValueType>
+				<TriggerLabel>State</TriggerLabel>
+				<ControlPanelLabel>State</ControlPanelLabel>
+			</State>
+		</States>
+	</Device>
 </Devices>
