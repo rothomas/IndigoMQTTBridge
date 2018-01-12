@@ -116,7 +116,7 @@
 			<State id="state">
 				<ValueType>String</ValueType>
 				<TriggerLabel>State</TriggerLabel>
-				<ControlPanelLabel>State</ControlPanelLabel>
+				<ControlPageLabel>State</ControlPageLabel>
 			</State>
 		</States>
 	</Device>
