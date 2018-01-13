@@ -3,5 +3,27 @@
 	 of a device (devices define their own actions), define them here.
 -->
 <Actions>
-   
+	<Action id="publish" uiPath="NotificationActions">
+		<Name>Publish MQTT Topic</Name>
+		<CallbackMethod>actionPublish</CallbackMethod>
+		<ConfigUI>
+			<Field id="topic" type="textField">
+				<Label>Topic:</Label>
+			</Field>
+			<Field id="payload" type="textField">
+				<Label>Payload:</Label>
+			</Field>
+			<Field id="retain" type="checkbox" defaultValue="false">
+				<Label>Retain:</Label>
+			</Field>
+			<Field id="qos" type="menu" defaultValue="0">
+				<Label>QOS:</Label>
+				<List>
+					<Option value="0">0 - Almost Once</Option>
+					<Option value="1">1 - At Least Once</Option>
+					<Option value="2">2 - Exactly Once</Option>
+				</List>
+			</Field>
+		</ConfigUI>
+	</Action>   
 </Actions>

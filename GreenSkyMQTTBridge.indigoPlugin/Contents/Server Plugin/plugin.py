@@ -211,6 +211,14 @@ class Plugin(indigo.PluginBase):
 		self.client.subscribe(valuesDict["stateTopic"])
 		self.connectToMQTTBroker()
 
+	def actionPublish(self, action):
+		self.debugLog("publish mqtt topic action")
+		topic = action.props["topic"]
+		payload = action.props["payload"]
+		qos = int(action.props["qos"])
+		retain = action.props["retain"]
+		self.client.publish(topic, payload, qos, retain)
+
 	def actionControlDevice(self, action, dev):
 		topic = dev.pluginProps["commandTopic"]
 		###### TURN ON ######
