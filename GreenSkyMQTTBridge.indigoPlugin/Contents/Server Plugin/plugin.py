@@ -209,6 +209,13 @@ class Plugin(indigo.PluginBase):
         self.client.subscribe(valuesDict["stateTopic"])
         self.connectToMQTTBroker()
 
+    def deviceStartComm(self, dev):
+        if dev.deviceTypeId == "MQTTLock":
+            updated = dev.pluginProps
+            updated["IsLockSubType"] = True
+            dev.replacePluginPropsOnServer(updated)
+            dev.stateListOrDisplayStateIdChanged()
+
     def actionPublish(self, action):
         self.debugLog("publish mqtt topic action")
         topic = action.props["topic"]

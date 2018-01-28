@@ -107,6 +107,7 @@
     <Device type="relay" id="MQTTLock">
         <Name>MQTT Lock</Name>
         <ConfigUI>
+            <Field type="checkbox" id="IsLockSubType" hidden="true" defaultValue="true" />
             <Field id="stateTopic" type="textfield" defaultValue="">
                 <Label>State Topic:</Label>
             </Field>
