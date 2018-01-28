@@ -229,8 +229,14 @@ class Plugin(indigo.PluginBase):
         else:
             return dev.pluginProps["payloadOff"]
 
+    def commandTopic(self, dev):
+        if dev.deviceTypeId == "MQTTLock":
+            return dev.pluginProps["stateTopic"]
+        else:
+            return dev.pluginProps["commandTopic"]
+
     def actionControlDevice(self, action, dev):
-        topic = dev.pluginProps["commandTopic"]
+        topic = self.commandTopic(dev)
         ###### TURN ON ######
         if action.deviceAction == indigo.kDeviceAction.TurnOn:
             # Command hardware module (dev) to turn ON here:
