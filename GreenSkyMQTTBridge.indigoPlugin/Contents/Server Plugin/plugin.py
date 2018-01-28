@@ -200,11 +200,18 @@ class Plugin(indigo.PluginBase):
 							dev.updateStateImageOnServer(indigo.kStateImageSel.SensorOff)
 							
 					if dev.deviceTypeId == "MQTTSensor":
-							dev.updateStateOnServer("display", msg.payload + dev.pluginProps["unit"] )
-							dev.updateStateOnServer("sensorValue", msg.payload )
+						dev.updateStateOnServer("display", msg.payload + dev.pluginProps["unit"] )
+						dev.updateStateOnServer("sensorValue", msg.payload )
+
+					if dev.deviceTypeId == "MQTTLock":
+					    dev.updateStateOnServer("state", msg.payload)
+					    if msg.payload == "locked":
+					        dev.updateStateOnServer("onOffState", True)
+					    if msg.payload == "unlocked":
+					        dev.updateStateOnServer("onOffState", False)
 
 					if dev.deviceTypeId == "MQTTTopic":
-							dev.updateStateOnServer("state", msg.payload)
+						dev.updateStateOnServer("state", msg.payload)
 				
 
 	def closedDeviceConfigUi(self, valuesDict, userCancelled, typeId, devId):
@@ -219,12 +226,24 @@ class Plugin(indigo.PluginBase):
 		retain = action.props["retain"]
 		self.client.publish(topic, payload, qos, retain)
 
+	def onPayload(self, dev):
+	    if dev.deviceTypeId == "MQTTLock":
+	        return "locked"
+	    else:
+	        return dev.pluginProps["payloadOn"]
+
+	def offPayload(self, dev):
+	    if dev.deviceTypeId == "MQTTLock":
+	        return "unlocked"
+	    else:
+	        return dev.pluginProps["payloadOff"]
+
 	def actionControlDevice(self, action, dev):
 		topic = dev.pluginProps["commandTopic"]
 		###### TURN ON ######
 		if action.deviceAction == indigo.kDeviceAction.TurnOn:
 				# Command hardware module (dev) to turn ON here:
-				payload = dev.pluginProps["payloadOn"]
+				payload = self.onPayload(dev)
 				self.client.publish(topic, payload, int(dev.pluginProps["qos"]), True)
 
 				sendSuccess = True		# Set to False if it failed.
@@ -242,7 +261,7 @@ class Plugin(indigo.PluginBase):
 		###### TURN OFF ######
 		elif action.deviceAction == indigo.kDeviceAction.TurnOff:
 				# Command hardware module (dev) to turn OFF here:
-				payload = dev.pluginProps["payloadOff"]
+				payload = self.offPayload(dev)
 				self.client.publish(topic, payload)
 				sendSuccess = True		# Set to False if it failed.
 
@@ -260,6 +279,10 @@ class Plugin(indigo.PluginBase):
 		elif action.deviceAction == indigo.kDeviceAction.Toggle:
 				# Command hardware module (dev) to toggle here:
 				newOnState = not dev.onState
+				if newOnState:
+    				self.client.publish(topic, self.onPayload(dev), int(dev.pluginProps["qos"]), True)
+    			else:
+    			    self.client.publish(topic, self.offPayload(dev))
 				sendSuccess = True		# Set to False if it failed.
 
 				if sendSuccess:
