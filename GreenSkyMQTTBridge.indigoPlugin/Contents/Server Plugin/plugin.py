@@ -215,6 +215,10 @@ class Plugin(indigo.PluginBase):
             updated["IsLockSubType"] = True
             dev.replacePluginPropsOnServer(updated)
             dev.stateListOrDisplayStateIdChanged()
+            if dev.onState:
+                dev.updateStateOnServer("state", "locked")
+            else:
+                dev.updateStateOnServer("state", "unlocked")
 
     def actionPublish(self, action):
         self.debugLog("publish mqtt topic action")
@@ -245,7 +249,7 @@ class Plugin(indigo.PluginBase):
     def actionControlDevice(self, action, dev):
         topic = self.commandTopic(dev)
         ###### TURN ON ######
-        if action.deviceAction == indigo.kDeviceAction.TurnOn:
+        if action.deviceAction == indigo.kDeviceAction.TurnOn or action.deviceAction == indigo.kDeviceAction.Lock:
             # Command hardware module (dev) to turn ON here:
             payload = self.onPayload(dev)
             self.client.publish(topic, payload, int(dev.pluginProps["qos"]), True)
@@ -263,7 +267,7 @@ class Plugin(indigo.PluginBase):
                 indigo.server.log(u"send \"%s\" %s failed" % (dev.name, "on"), isError=True)
 
         ###### TURN OFF ######
-        elif action.deviceAction == indigo.kDeviceAction.TurnOff:
+        elif action.deviceAction == indigo.kDeviceAction.TurnOff or action.deviceAction == indigo.kDeviceAction.Unlock:
             # Command hardware module (dev) to turn OFF here:
             payload = self.offPayload(dev)
             self.client.publish(topic, payload)
