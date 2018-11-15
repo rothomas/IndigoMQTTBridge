@@ -223,7 +223,7 @@ class Plugin(indigo.PluginBase):
     def actionPublish(self, action):
         self.debugLog("publish mqtt topic action")
         topic = action.props["topic"]
-        payload = action.props["payload"]
+        payload = self.substitute(action.props["payload"])
         qos = int(action.props["qos"])
         retain = action.props["retain"]
         self.client.publish(topic, payload, qos, retain)
